@@ -1,206 +1,229 @@
-DF <- read.csv("example_studentlist.csv")
-attach(DF)
+ 
+
+ # 데이터셋 패키지 불러오기
+install.packages("hflights")
+library("hflights")
+head(hflights,5)
+str(hflights)
+
+CountOfDest <- table(hflights$Dest)
+CountOfDest
+
+# 명목형 변수 개수 세기 (몇개의 원소가 있는지 알 수 있음)
+length(CountOfDest)
+# 가장 작은 값과 가장 큰값을 알려줌
+range(CountOfDest)
+
+# 최소값과 최대값의 이름찾기
+CountOfDest[CountOfDest==1]
+CountOfDest[CountOfDest==9820]
+
+# 6000횟수가 넘는 공항 찾기
+SelectedDest <- CountOfDest[CountOfDest > 6000]
+SelectedDest
+
+# 6000횟수가 넘는 공항들의 전체 합 구하기
+addmargins(SelectedDest,margin=1)
+# 막대그래프 그리기
+barplot(SelectedDest)
+
+# 대장암 환자 자료 분석
+DF <- read.csv("example_cancer.csv")
 DF
 str(DF)
-plot(age)
-plot(height)
-#두개의 컬럼의 상관관계
-plot(height,weight)
-plot(weight~height)
 
-# sex가 char형이므로 factor로 변경
-is(sex)
-sex <- as.factor(sex)
-plot(sex,height)
+# 연령대별로 도수값을 구함
+# cut() 연령대별로 나눔, breaks() 1부터 11까지 *10-- 10~110까지임
+DegreeOfAge <- table(cut(DF$age, breaks=(1:11)*10))
+DegreeOfAge
 
-DF2 <- data.frame(DF$height, DF$weight)
-DF2
-plot(DF)
+# 열의 이름을 바꿈
+rownames(DegreeOfAge) <- c("10s", "20s", "30s", "40s", "50s", "60s", "70s", "80s", "90s", "100s")
+DegreeOfAge
 
-DF3 <- cbind(DF2, DF$age)
-DF3
-plot(DF3)
-plot(DF)
-
-# pch는 점의 종류
-plot(weight~height, pch=as.integer(sex))
-
-# legend == 범례
-legend("topleft", c("남", "여"), pch=DF$sex)
-coplot(weight~height|sex)
-
-plot(weight~height, ann=F)
-# 그래프 제목
-title(main="A대학 B학과생 몸무게와 키의 상관관계")
-# x축
-title(xlab="몸무게")
-# y축
-title(ylab="키")
-# 눈금표
-grid()
-
-# 그래프에 선 긋기
-weightMean <- mean(height)
-abline(v=weightMean, col="red")
-
-# bar그래프 (명목형변수)
-FreqBlood <- table(DF$bloodtype)
-FreqBlood
-barplot(FreqBlood)
-
-title(main="혈액형별 빈도수")
-title(xlab="혈액형")
-title(ylab="빈도수")
-
-# 그룹별 평균값 나타내기
-DF
-Height <- tapply(DF$height, DF$bloodtype, mean)
-Height
-
-# ylim == y축의 범위를 정함
-barplot(Height, ylim=c(0, 200))
-boxplot(height)
-boxplot(height~bloodtype
-
-# 막대의 개수를 바꾸고 싶다면 인자를 추가
-# x축은 빈도수
-hist(height, breaks=10)
-
-# 상대도수밀도
-hist(height, breaks=10, prob=T)
-# 곡선추가
-lines(density(height))
-
-# hist() breaks인자는 위치값을 직접 입력할수 있음
-BreakPoint <- seq(min(height), max(height)+7, by=7)
-hist(height, breaks=BreakPoint)
-
-# 계급이 서로 다른경우 일일이 입력도 가능 (y축은 밀도로 변화)
-DiffPoint <- c(min(height), 165, 170, 175, 180, 185, 190)
-hist(height, breaks=DiffPoint)
-
-# 한화면에 여러 그래프 그리기 par함수
-par(mfrow=c(2,3))  #2행 3열
-plot(weight, height)
-plot(sex, height)
-barplot(table(bloodtype))
-boxplot(height)
-boxplot(height~ bloodtype)
-hist(height, breaks=10)
-
-# 원래대로 되돌리고 싶으면
-par(mfrow=c(1,1))
-
-# 넘겨가며 그래프 보기
-sex <- as.factor(sex)
-plot(weight~height+age+grade+absence+sex)
-
-# 한그래프에 두 그래프를 겹쳐 나타내기
-# runif는 난수를 만드는 함수
-# round(숫자형 객체, 자리수) 소수점을 제어
-TS1 <- c(round(runif(30)*100))
-TS1
-TS2 <- c(round(runif(30)*100))
-TS2
-
-# 정렬
-TS1 <- sort(TS1, decreasing=F)
-TS2 <- sort(TS2, decreasing=F)
-TS1
-TS2
-# 그래프와 line() 함수를 이용하여 라인을 추가
-plot(TS1,type="l")  # type은 line
-lines(TS2, lty="dashed", col="red")
-
-# 겹치는 그래프는 라인 그래프만 허용
-x1 <- seq(1, 100, 1)
-y1 <- dbinom(x1, 100, 0.25)
-x2 <- seq(1, 50, 1)
-y2 <- dbinom(x2, 50, 0.5)
-plot(x1, y1, type="h", ylim=c(0,0.2))
-lines(x2, y2, col="red")
-
-DF1 <- data.frame(x=x1, y=y1, t=1)
-DF2 <- data.frame(x=x2, y=y2, t=1)
-DF <- rbind(DF1, DF2)
-# type=p 는 산점도를 그릴수 있는 타입임
-plot(DF$y~DF$x, type="p", pch="DF$t", col=c("red", "blue"))
-plot(x1, y1, type="p")
-plot(x1, y1, type="l")
-plot(x1, y1, type="c")
-plot(x1, y1, type="b")
-plot(x1, y1, type="o")
-plot(x1, y1, type="h")
-plot(x1, y1, type="s")
-
-## ggplot2 그래프 그리기
+# 시각화 시킴
 library("ggplot2")
 library("ggthemes")
-ggplot(data=diamonds,aes(x=carat, y= price, colour=clarity))+geom_point()+theme_wsj()
+ggplot(data=DF, aes(x=age)) + geom_freqpoly(binwidth=10, size=1.4, colour="orange") + theme_wsj()
 
-# plot() 기본함수는 재사용이 안됨
-a <- plot(height)
-a
+install.packages("data.table")
+library("data.table")
+library("ggplot2")
 
-# 반복적으로 코딩하지 않아도 되기 때문에 다양하게 시각화 가능
-g1 <- ggplot(data=diamonds, aes(x=carat, y=price, colour=clarity))
-g2 <- geom_point()
-g3 <- theme_wsj()
-g1+g2+g3
-g1+g2 + theme_bw()
+# read.csv 보다 빠른 fread()로 데이터를 불러옴
+# fread는 data.table패키지의 함수임 관측치가 많고 데이터가 큰경우 fread로 불러옴
+DF <- fread("example_coffee.csv", header=T, stringsAsFactors=T,data.table=F)
+DF
+str(DF)
 
-# ggplot의 함수
+# 불필요한 변수 삭제
+DF <- subset(DF, select=c(-adress,-adressBystreet,-dateOfclosure,-startdateOfcessation, -duedateOfcessation,-dateOfreOpen,-zip))
+DF
+str(DF)
 
-# 그래프를 그리는 함수는 geom_point(), geom_line(), geom_histogram() (기하객체함수)
-DF <- read.csv("example_studentlist.csv")
-# colour를 blood를 정의하여 blood별로 그래프가 그려짐
-g1 <- ggplot(DF, aes(x=height, y=weight, colour=bloodtype))
-# 점을 그리는 point
-g1 + geom_point()
-# 라인을 그리는 line
-g1 + geom_line()
-g1 + geom_point()+geom_line()
-g1 + geom_line(size=1)+ geom_point(size=10)
+# 최초커피숍 찾기
+# YearOfStart변수 범위를 구하면, 최초등록한 커피숍의 연도를 알수 있음
+# rm=T 는 Na값을 제외하고 함수를 실행하기 위하여 추가
+range(DF$yearOfStart,na.rm=T)
 
-# facet_grid()함수 사용하기
-# facet_grid()함수는 명목형변수를 기준으로 나눠서 별도의 그래프를 그려줌
-# 목적은 level을 기준으로 나눠서 서로 비교하는것임
-# 독립변수는 sex x축을 나눠서 각각성별을 나타냄
-g1 + geom_point(size=10) + geom_line(size=1) + facet_grid(.~sex)
-# sex를 y축으로 나눔
-g1 + geom_point(size=10) + geom_line(size=1) + facet_grid(sex~.)
+# subset을 이용하여 '운영중'인 관측치만 별도로 저장
+DFFilter <- subset(DF, subset=(stateOfbusiness=="운영중"))
+# 운영중인 가게의 년도
+range(DFFilter$yearOfStart, na.rm=T)
 
-# scales인자를 이용해 각각의 스케일을 가질수있음
-g1 + geom_point(size=10) + geom_line(size=1) + facet_grid(sex~.,scale="free")
-# facet_grid는 y축에 대해서는 각각의 스케일을 가지는것을 허용하지않음
-g1 + geom_point(size=10) + geom_line(size=1) + facet_wrap(~sex,scale="free")
+subset(DFFilter,subset=(yearOfStart==1967))
+# 해마다 오픈한 커피숍 개수를 찾기
+table(DF$yearOfStart)
 
-# mpg데이터셋을 이용해 facet_grid() 와 facet_wrap()함수의 차이를 살펴봄
-g <- ggplot(mpg, aes(displ, hwy))
-g + geom_point()
-g + geom_point() + facet_grid(.~class)
+library("ggplot2")
+qplot(yearOfStart,data=DF, geom="bar")
 
-# 실린더수(cyl)에 따른 각각의 산점도 그래프를 추가
-# x축과 y축의 단위는 바뀔수 없음
-# facet_grid()함수는 명목형변수들이 level별로 나눠서 그래프를 보여주는 목적으로 사용됨
-g + geom_point(alpha=.3) + facet_grid(cyl~class, scales="free")
+# table()함수에 두변수를 넣어 분할표를 만듦
+# 연도별로 운영과 폐업 커피숍을 비교해봄
+Freq <- table(DF$stateOfbusiness, DF$yearOfStart)
+Freq
 
-# facet_wrap함수의 목적은 각각의 그래프를 모아서 보기위함
-g + geom_point(alpha=.3) + facet_wrap(cyl~class, scales="free")
-g + geom_point(alpha=.3) + facet_wrap(cyl~class, scales="free", ncol=3)
+# 1997년도 이상 데이터만 저장
+which(colnames(Freq)=="1997")
 
-# geom_bar() 바그래프로 그리기
-ggplot(DF, aes(x=bloodtype)) + geom_bar()
+# 마지막 위치값을 알려줌
+which.max(colnames(Freq))
+Freq <- Freq[,c(30:47)]
+Freq
 
-# 성별로 막대의 컬러가 나타남 // 성별이 하나의 막대에 누적
-ggplot(DF, aes(x=bloodtype, fill=sex)) + geom_bar()
+# 비율을 확인 ( margin인자 값에 2를 넣으면 열의 비율로 계산 )
+PFreq <- prop.table(Freq,margin=2)
+PFreq
 
-# dodge를 사용하면 성별로 각가 막대로 나타냄
-ggplot(DF, aes(x=bloodtype, fill=sex)) + geom_bar(position="dodge")
+NewDF <- data.frame(colnames(Freq),Freq[1,],Freq[2,],PFreq[1,],PFreq[2,])
+NewDF
 
-# indentity를 사용하면 level별로 더해지지않고 겹쳐서 나타냄
-ggplot(DF, aes(x=bloodtype, fill=sex)) + geom_bar(position="identity")
+# 행과 열의 이름을 정리
+rownames(NewDF) <- NULL
+colnames(NewDF) <- c("Time", "Open", "Close", "pOpen", "pclose")
+NewDF
 
+# 라인 그래프를 그림
+ggplot(NewDF, aes(x=factor(Time),y=Close,group=1)) +
+geom_line(colour="steelblue1", size=1)+
+geom_point(colour="steelblue", size=3)+
+geom_line(aes(y=Open),colour="tomato2", size=1)+
+geom_point(aes(y=Open),colour="red",size=6)+
+theme_bw()
+
+# 빠르게 불러오기 위해 data.table패키지를 로드함
+# 전국 커피숍 규모 파악하기
+library("data.table")
+
+DF <- fread("example_coffee.csv", header=T, stringsAsFactors=T, data.table=F)
+DF
+# 사업장 규모 변수만 별도 객체에 저장함
+Size <- DF$sizeOfsite
+
+# 자료의 특성을 파악
+# 평균, 최소값과 최대값 그리고 결측치가 몇개인지 알려줌
+summary(Size)
+plot(Size)
+
+# 아웃라이어를 삭제함
+# 처리 후 결측치가 19에서 20으로 변함
+Size[Size > 10000] <- NA
+summary(Size)
+
+# 0값과 NA값을 삭제
+# 0값을 NA처리한 후 NA값 전체를 벡터에서 제거
+Size[Size==0] <- NA
+
+# Na값을 없애줌
+Size <- Size[complete.cases(Size)]
+summary(Size)
+
+# 20단위로 계급을 만듬 
+DegreeOfSize <- table(cut(Size, breaks=(0:72)*20))
+DegreeOfSize
+
+# 그래프를 그림
+# 30~40사이즈가 가장많음, 대략 10평정도 규모의 커피숍이 가장 많은것으로 나타남
+library("ggplot2")
+library("ggthemes")
+ggplot(data=DF,aes(x=sizeOfsite))+
+geom_freqpoly(binwidth=10, size=1.2, colour="orange")+
+scale_x_continuous(limits=c(0,300),breaks=seq(0,300,20))+
+theme_wsj()
+
+# 전국 인구조사 자료 정리하기
+# stringAsFactors=F를 넣는 이유는 인구수 데이터에 ","가 있기때문에
+# 해당 변수가 factor로 인식되기때문, 문자열로 인식하는게 편함
+DF <- read.csv("example_population.csv", stringsAsFactors=F)
+DF
+str(DF)
+# 자료 몇개만 살펴봄, head()함수 이용 (서울시, 종로구로 분리하고 숫자를 지움)
+head(DF,5)
+
+# 문자열 정리하기 위한 패키지
+install.packages("stringr")
+library("stringr")
+
+# '(' 를 기준으로 앞 문자열만 사용
+# '\\('은 정규식 표현으로 "(" 문자를 가리킴, 숫자는 몇개로 분리할것인지
+# str_split_fixed()함수는 특정 문자열로 나눠지는 기능
+temp <- str_split_fixed(DF[,1],"\\(",2)
+head(temp,10)
+
+# 공백을 기준으로 시, 구 를 나눔
+NewCity <- str_split_fixed(temp[,1]," ",2)
+head(NewCity,10)
+
+# 변수 이름을 바꿈
+colnames(NewCity) <- c("probvinces", "City")
+
+# 작업한 변수를 합침
+DF <- data.frame(NewCity, DF[,c(2:7)])
+head(DF,3)
+
+# City값중 빈곳을 NA로 바꿈
+DF[DF==" "] <- NA
+head(DF,10)
+
+# NA가 있는 행은 삭제함
+# NA가 있는 행은 시의 토탈값이였는데, 삭제하고 직접 R에서 컨트롤함
+DF <- DF[complete.cases(DF),]
+head(DF,10)
+
+# 인구수 변수에 ","가 있어 문자열임. 계산하려면 수치형으로 바꿔야함
+# 문자열 변수를 수치형 변수로 변경
+
+# for문을 이용해 3번째 변수부터 8번째까지 중간에 ","이 들어있는 숫자를 삭제
+# numeric으로 변환, 변수의 모든값은 function함수가 적용 적용되는 내용이 gsub()임
+# gsub()은 첫 번째 인자를 두번째 인자로 변경
+for(i in 3:8){ 
+DF[,i] <- sapply(DF[,i], function(x) gsub(",","",x))
+DF[,i] <- as.numeric(DF[,i])
+}
+str(DF)
+
+# Province의 인구수만 불러옴
+# tapply()는 그룹별로 평균이나 합을 보기위해 사용하는 함수
+
+ProPopul <- tapply( DF$Population, DF$probvinces,sum)
+ProPopul
+
+# 세종시는 City값이 없어 NA정리될때 지워졌는데, Level값이 남아있어서 나옴
+# probvinces변수를 factor로 다시 정의하면 값이 없는 Level은 삭제됨
+DF[,1] <- factor(DF[,1])
+ProPopul <- tapply(DF$Population, DF$probvinces,sum)
+ProPopul
+
+# ggplot2로 그래프를 그림
+library("ggplot2")
+library("ggthemes")
+graph <- ggplot(DF, aes(x=probvinces, y=Population, fill=probvinces)) + 
+geom_bar(stat="identity")
+graph
+
+# csv로 저장하기
+write.csv(DF, "example_population_f.csv")
+write
 
 
 
