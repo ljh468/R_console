@@ -22,7 +22,7 @@ library(KoNLP)
 # 형태소 사전 설치
 install.packages("devtools")
 library(devtools)
-devtools::install_github('haven-jeon/NIADic/NIADic', build_vignettes = TRUE)
+devtools::install_github('haven-jeon/NIADic/NIADic', build_vignettes = FALSE)
 
 # Java 홈 디렉토리 설정
 Sys.setenv(JAVA_HOME='c:/Java/jdk1.8.0_191')
