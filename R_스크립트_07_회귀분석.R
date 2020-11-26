@@ -38,3 +38,5 @@ mode(LR)
 # 절편과 기울기 라인을 그림
 - abline()함수로 회귀모델을 그림
 abline(LR, col=“blue”, lwd=2)
+
+#
