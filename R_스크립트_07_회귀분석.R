@@ -29,7 +29,7 @@ grid()
 # 절편과 기울기 구하기
 LR <- lm(Total_pay ~ Work_hour, data=DF)
 LR
-- 사용방법은 lm(종속변수 ~ 독립변수, 데이터임). ‘종속변수 ~ 독립변수’를 formula인자라 부르고 데이터를 데이터 인자라 부름
+- 사용방법은 lm(종속변수 ~ 독립변수, 데이터임). ‘종속변수 ~ 독립변수’를 formula인자라 부르고 데이터를 데이터인자라 부름
 - 절편(Intercept)값은 ?5.5e-12이고 Work_hour가 기울기임
 
 # lm 속성 사례보기
@@ -39,4 +39,24 @@ mode(LR)
 - abline()함수로 회귀모델을 그림
 abline(LR, col=“blue”, lwd=2)
 
-#
+# 안타와 홈런 변수를 활용한 회귀분석
+DF <- read.csv(“exmple_kbo2015.csv”)
+str(DF)
+- 안타와 홈런 두변수간의 상관관계에 대해서 알아봄
+- 안타는 H, 홈런은 HR
+DF$H
+DF$HR
+# 두변수의 상관관계를 구함
+cor(DF$H, DF$HR)
+# 두 변수간의 산점도를 그림
+plot(HR~H, data=DF, pch=20, col=“grey”, cex=1.5)
+- 산점도를 H에 따른 HR이 서로 양에 비례한다는 것을 알 수 있음
+# 회귀모델 그림
+Lm <- lm(HR~H, data=DF)
+Lm
+abline(Lm, lwd=2, col=“red”)
+- 회귀분석은 기울기가 의미가 있음
+
+# mtcars 데이터셋으로 회귀분석하기 (R 의 내장 데이터셋)
+mtcars
+str(mtcars)
