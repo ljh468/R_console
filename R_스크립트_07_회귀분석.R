@@ -1,22 +1,24 @@
 # 회귀분석
-- 평균으로 돌아가려는 현상 ( 값이 평균에서 벗어나지 않음)
-- 회귀분석은 변수간의 관계에 대해서 마하기 위해 필요함
-- 상관계수는 관계의 긴밀함을 수치적으로 얘기하지만, 회귀는 변수의 변화에 따른 다른 변수의 값을 파악함
-- 회귀분석은 독립변수가 종속변수에 어떤 영향을 미치는지 알아보는 방법
-EX) 50 100 150 200 이면 250 일 것이다.
-- R에서는 lm()함수를 실행하면 (원래는 미분으로 적합한 함수를 찾아야함)
+# 평균으로 돌아가려는 현상 ( 값이 평균에서 벗어나지 않음)
+# 회귀분석은 변수간의 관계에 대해서 말하기 위해 필요함
+# 상관계수는 관계의 긴밀함을 수치적으로 얘기하지만, 회귀는 변수의 변화에 따른 다른 변수의 값을 파악함
+# 회귀분석은 독립변수가 종속변수에 어떤 영향을 미치는지 알아보는 방법
+# EX) 50 100 150 200 이면 250 일 것이다.
+# R에서는 lm()함수를 실행하면 됨 (원래는 미분으로 적합한 함수를 찾아야함)
 
 # 단순 선형 회귀모델 이해하기
-- 모든점을 지나지 않지만 최대한 모든 점의 근처를 지나고 있음
-- 직선의 함수식 Y = a + bX임
-- 모든점에 적합한 선(회귀모델)을 수학적으로 찾는 것은 a와 b를 구하는것임
+# 모든점을 지나지 않지만 최대한 모든 점의 근처를 지나고 있음
+# 직선의 함수식 Y = a + bX임
+# intercept 가 a, 그옆에 변수가 b임
+# Y = a + bX
+# 모든점에 적합한 선(회귀모델)을 수학적으로 찾는 것은 a와 b를 구하는것임
 
 # R에서 회귀모델 구하기
 lm(mpg~hp, data=mtcars)
 
-# 회귀모델은 포본데이터를 통해 만듦
-- 모집단은 너무 크고 모두 조사할 수 없는 경우가 대부분이라 표본을 통해 모집단을 알아내는 것임
-- 회귀모델을 통해 모집단의 특성을 말할 수 있고 두 변수간의 관계를 설명
+# 회귀모델은 표본데이터를 통해 만듦
+# 모집단은 너무 크고 모두 조사할 수 없는 경우가 대부분이라 표본을 통해 모집단을 알아내는 것임
+# 회귀모델을 통해 모집단의 특성을 말할 수 있고 두 변수간의 관계를 설명
 
 # 잔차는 회귀모델에서 데이터가 떨어진 값임
 DF <- data.frame(Work_hour=1:7)
@@ -34,28 +36,28 @@ LR
 
 # lm 속성 사례보기
 mode(LR)
-- lm()함수로 반환하는 값은 리스트임
+# lm()함수로 반환하는 값은 리스트임
 # 절편과 기울기 라인을 그림
-- abline()함수로 회귀모델을 그림
+# abline()함수로 회귀모델을 그림
 abline(LR, col=“blue”, lwd=2)
 
 # 안타와 홈런 변수를 활용한 회귀분석
 DF <- read.csv(“exmple_kbo2015.csv”)
 str(DF)
-- 안타와 홈런 두변수간의 상관관계에 대해서 알아봄
-- 안타는 H, 홈런은 HR
+# 안타와 홈런 두변수간의 상관관계에 대해서 알아봄
+# 안타는 H, 홈런은 HR
 DF$H
 DF$HR
 # 두변수의 상관관계를 구함
 cor(DF$H, DF$HR)
 # 두 변수간의 산점도를 그림
 plot(HR~H, data=DF, pch=20, col=“grey”, cex=1.5)
-- 산점도를 H에 따른 HR이 서로 양에 비례한다는 것을 알 수 있음
+# 산점도를 H에 따른 HR이 서로 양에 비례한다는 것을 알 수 있음
 # 회귀모델 그림
 Lm <- lm(HR~H, data=DF)
 Lm
 abline(Lm, lwd=2, col=“red”)
-- 회귀분석은 기울기가 의미가 있음
+# 회귀분석은 기울기가 의미가 있음
 
 # mtcars 데이터셋으로 회귀분석하기 (R 의 내장 데이터셋)
 mtcars
@@ -188,6 +190,145 @@ NewTeam <- data.frame(TB=1600)
 predict(Lm, newdata=NewsTeam)
 # -> 1600루타 값을 넣었더니 121개 홈런이라고 알려줌
 
+# 예제 1 (키와 몸무게 회귀모델 구하기)
+DF <- read.csv("example_studentlist.csv")
+head(DF, 3)
+# 키와 몸무게의 회귀모델을 구함
+Lm = lm(height~weight, data=DF)
+plot(height~weight, data=DF)
+abline(Lm, col="red")
+# 회귀모델의 적합성을 검증함
+summary(Lm)
+# R2는 상관계수의 제곱 (회귀모델이 적합하려면 상관계수가 높아야함)
+# p값은 0.05보다 작으면 적합
+par(mfrow=c(2, 2))
+plot(Lm)
+# 잔차그래프는 균일하게 퍼져있어야 적합
+# 관측치가 최소 30개이상이 있어야 회귀모델은 유효함
+
+# 예제2(2015 KBO 야구데이터 분석하기)
+# 타율에는 어떤 변수들이 영향을 미치는지 회귀분석함
+DF <- read.csv("example_kbo2015_player.csv", stringAsFactors=F, na="-")
+str(DF)
+# 문자열로 되어있는 변수를 모두 실수형으로 바꿈
+DF$AVG <- as.numeric(DF$AVG)
+DF$GO.AO <- as.numeric(DF$GO.AO)
+DF$BB.K <- as.numeric(DF$BB.K)
+DF$P.PA <- as.numeric(DF$P.PA)
+DF$ISOP <- as.numeric(DF$ISOP)
+# 홈런과 다른 변수간의 상관관계를 살펴봄
+Cors <- cor(DF$HR, DF[,5:length(DF)], use="pairwise.complete.obs")
+Cors
+# cor과 같이 다변량을 취급하는 함수에서는 na.rm대신에 use를 사용함
+# pairwise.complete.obs : 상관계수가 계산되는 변수의 결측값이 있는 case를 제거한 상관계수 계산
+# sorting으로 상관관계를 다시봄
+Cors <- Cors[ , order(Cors)]
+Cors
+# 홈런은 타석과 타수가 높으면 많아지고, AO(뜬공)이 의외로 혼런과 상관관계가 있어보임
+# 홈런과 뜬공에서의 값이 0인 관측치를 제거함
+DF$HR[DF$HR==0] <- NA
+DF$AO[DF$AO==0] <- NA
+DF <- na.omit(DF)
+# 회귀모델을 구함
+Lm <- lm(HR~AO, data=DF)
+Lm
+# 함수식으로 적으면  Y = -0.5244 +  0.1541X임 대략 1개의 홈런을 칠때마다 15개의 뜬공이 생긴다는것임
+summary(Lm)
+# R2는 0.4156으로 애매, p값은 0.05보다 한참아래임
+# 잔차그래프를 그림
+par(mfrow=c(2, 2))
+plot(Lm)
+# R2가 애매하긴 했어도 잔차가 정규분포를 잘따름, 회귀모델에 적합하다는 말
+
+# 예제3 (지구 최고온도에 영향을 미치는 독립변수로 다중회귀분석하기)
+# Airquality라는 내장 데이터셋이 있음
+head(airquality, 5)
+plot(airquality)
+# 뉴욕의 1973년 5월부터 9월까지 대기상태에 대한 정보를 담은 데이터셋임
+# 데이터셋의 변수들은 Ozone, Solar.R, Wind, Temp, Month, Day 6개가 있음
+# 하루중 최고온도(Temp)를 종속변수로 두고 오존량(Ozone)과 태양방사선량(Solar.R), 평균풍속(Wind)을 독립변수로 다중선형회귀적합을 확인
+Lm <- lm(Temp~ozone+Solar.R+Wind, data=airquality)
+Lm
+summary(Lm)
+# 결정계수는 애매, p값 0.05보다 작음, Solar.R과 Wind는 회귀계수가 0이될 가능성이 높음(1에 가까울수록)
+
+#예제 4 ( 2015 kbo 야구 데이터 다중선형회귀분석하기 )
+DF <- read.csv("example_kbo2015_player.csv", stringAsFactors=F, na="-")
+str(DF)
+# 문자열변수를 수치형으로 수정
+DF$AVG <- as.numeric(DF$AVG)
+DF$GO.AO <- as.numeric(DF$GO.AO)
+DF$BB.K <- as.numeric(DF$BB.K)
+DF$P.PA <- as.numeric(DF$P.PA)
+DF$ISOP <- as.numeric(DF$ISOP)
+# 홈런과 다른 변수간의 상관관계를 확인
+Cors <- cor(DF$HR, DF[ , 5 : length(DF) ], use="pairwise.complete.obs")
+Cors
+# sorting으로 상관관계를 봄
+Cors <- Cors[ , order(Cors) ]
+Cors
+# 다중선형회귀분석을 하기 위해 상관계수가 높은순위부터 5개를 넣어봄
+# RBI(타점), XBH(장타), TB(루타), XR(추정득점), R(득점) 을 독립변수로 사용
+# 독립변수에서 값이 0인 관측치를 제거함
+DF$HR[DF$HR == 0] <- NA
+DF$RBI[DF$RBI == 0] <- NA
+DF$XBH[DF$XBH == 0] <- NA
+DF$TB[DF$TB == 0] <- NA
+DF$XR[DF$XR == 0] <- NA
+DF$GW.RBI[DF$GW.RBI == 0] <- NA
+DF <- na.omit(DF)
+# 여러변수를 독립변수로 사용함
+Lm <- lm(HR~RBI+XBH+TB+XR+R, data=DF)
+Lm
+# R2, p값 모두 좋음, 각각 회귀계수도 0.05이하 이기때문에 0일가능성이 매우 낮음
+
+# 예제5 ( mtcars 데이터로 예측)
+DF <- mtcars
+head(DF, 3)
+str(DF)
+# 변수중 mpg(연비)를 종속변수로 wt(차체무게)를 독립변수로 하는 회귀모델을 구함
+Lm <- lm(mpg~wt, data=DF)
+Lm
+# -> 회귀모델을 보니 wt는 -5.344임 , 1톤이 늘때마다 연비는 5만큼 낮아짐
+summary(Lm)
+# R2는 0.75fh didgh, 회귀계수도 0일 가능성이 없음
+# 회귀계수는 pr (>|t|) 임
+# 0.05보다 작은값이 나와야함 ( 1에 가까울수록 0일가능성이 높음)
+# 회귀모델에 값을 넣어 추정치를 구함
+b <- predict(Lm)
+b
+# 자동차 1개만 실제값과 추정치를 비교함
+DF$mpg[1]
+b[1]
+# -> 회귀모델이 적합하여 두값의 차이가 거의 나지않음
+# 데이터프레임에 넣어 비교함
+Com <- data.frame(mpg=DF$mpg, fittedMPG=b)
+Com
+# -> 대부분 값이 비슷함
+# 차체무게가 6톤일때 연비가 몇이 될지 추정해봄
+NewCar <- data.frame(wt=6)
+predict(Lm, newdata=NewCar)
+# -> 예측값은 6톤 차제무게는 5.21의 연비임
+# 차체무게 400kg 일때 연비를 구해봄
+NewCar2 <- data.frame(wt=0.4)
+predict(Lm, newdata=NewCar2)
+# 예측값은 400kg 차제무게는 35.14의 연비임
+
+# 예제6 ( diamonds데이터로 캐럿에 따른 가격 예측)
+library("ggplot2")
+DF <- diamonds
+head(DF, 3)
+str(DF)
+# 여러변수중에 캐럿에 따른 가격이 어떤 관계가 있는지 회귀분석함
+Lm <- lm(price~carat, data=DF)
+Lm
+# 1캐럿만 올라가도 가격은 7756달러가 올라감
+summary(Lm)
+# R2양호, p값 양호, 회귀계수 0일 가능성 낮음
+# 10캐럿과 20캐럿일때 가격을 예측하기 위해 두개의 값을 넣어봄
+NewDiamond <- data.frame(carat=c(10, 20))
+predict(Lm, newdata=NewDiamond)
+# 10캐럿은 75307달러, 20캐럿은 152872달러
 
 
 
