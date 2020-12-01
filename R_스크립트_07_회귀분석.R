@@ -87,7 +87,7 @@ summary(Lm)
 option(scipen=999) # scientific notation이 나오지않도록함
 summary(Lm)
 # p-value가 p값임 (0.05보다 작으면 b1이 0일 가능성이 낮아지면서 회귀모델이 적합하다고 통계적으로 말할수 있음
-# 신뢰구간을 알고싶다면
+# 신뢰구간을 알고싶다면 ?
 confint(Lm)
 
 # 잔차 관련그래프를 그려 회귀적합성 검증하기
@@ -329,14 +329,4 @@ summary(Lm)
 NewDiamond <- data.frame(carat=c(10, 20))
 predict(Lm, newdata=NewDiamond)
 # 10캐럿은 75307달러, 20캐럿은 152872달러
-
-
-
-
-
-
-
-
-
-
 
